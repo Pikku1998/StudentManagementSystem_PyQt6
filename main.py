@@ -23,6 +23,7 @@ class MainWindow(QMainWindow):
         self.student_table = QTableWidget()
         self.student_table.setColumnCount(4)
         self.student_table.setHorizontalHeaderLabels(('Id', 'Name', 'Course', 'Mobile no.'))
+        self.student_table.verticalHeader().setVisible(False)
         self.setCentralWidget(self.student_table)
         self.load_table()
 
@@ -33,6 +34,7 @@ class MainWindow(QMainWindow):
             self.student_table.insertRow(row_number)
             for column_number, cell_data in enumerate(row_data):
                 self.student_table.setItem(row_number, column_number, QTableWidgetItem(str(cell_data)))
+        connection.close()
 
 
 app = QApplication(sys.argv)
