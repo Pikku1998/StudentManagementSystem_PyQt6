@@ -32,6 +32,7 @@ class MainWindow(QMainWindow):
     def load_table(self):
         connection = sqlite3.connect('database.db')
         result = connection.execute('SELECT * FROM STUDENTS')
+        self.student_table.setRowCount(0)
         for row_number, row_data in enumerate(result):
             self.student_table.insertRow(row_number)
             for column_number, cell_data in enumerate(row_data):
@@ -53,23 +54,36 @@ class InsertDialog(QDialog):
 
         layout = QVBoxLayout()
 
-        student_name = QLineEdit()
-        student_name.setPlaceholderText('Name')
-        layout.addWidget(student_name)
+        self.student_name = QLineEdit()
+        self.student_name.setPlaceholderText('Name')
+        layout.addWidget(self.student_name)
 
-        course_enrolled = QComboBox()
-        courses = ['Computer Science', 'Data Science', 'Artificial Intelligence', 'Mathematics']
-        course_enrolled.addItems(courses)
-        layout.addWidget(course_enrolled)
+        self.course_enrolled = QComboBox()
+        courses = ['Computer Science', 'Data Science', 'Artificial Intelligence', 'Cyber Security', 'Mathematics']
+        self.course_enrolled.addItems(courses)
+        layout.addWidget(self.course_enrolled)
 
-        mobile = QLineEdit()
-        mobile.setPlaceholderText('Mobile Number')
-        layout.addWidget(mobile)
+        self.mobile = QLineEdit()
+        self.mobile.setPlaceholderText('Mobile Number')
+        layout.addWidget(self.mobile)
 
         button = QPushButton('Add this student')
+        button.clicked.connect(self.add_student)
         layout.addWidget(button)
 
         self.setLayout(layout)
+
+    def add_student(self):
+        name = self.student_name.text()
+        course = self.course_enrolled.currentText()
+        mobile = self.mobile.text()
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('INSERT INTO students (name, course, mobile) VALUES (?,?,?)', (name, course, mobile))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        management_system.load_table()
 
 
 app = QApplication(sys.argv)
