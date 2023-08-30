@@ -19,6 +19,10 @@ class MainWindow(QMainWindow):
         add_student_action = QAction('Add Student', self)
         add_student_action.triggered.connect(self.insert_student)
         file_menu_item.addAction(add_student_action)
+        search_student_action = QAction('Search', self)
+        search_student_action.triggered.connect(self.search_student)
+        file_menu_item.addAction(search_student_action)
+
         about_action = QAction('About', self)
         help_menu_item.addAction(about_action)
 
@@ -44,12 +48,17 @@ class MainWindow(QMainWindow):
         dialog = InsertDialog()
         dialog.exec()
 
+    @staticmethod
+    def search_student():
+        dialog = SearchDialog()
+        dialog.exec()
+
 
 class InsertDialog(QDialog):
     def __init__(self):
         super().__init__()
-        self.setFixedWidth(200)
-        self.setFixedHeight(300)
+        self.setFixedWidth(300)
+        self.setFixedHeight(200)
         self.setWindowTitle('Enter Student Data')
 
         layout = QVBoxLayout()
@@ -84,6 +93,26 @@ class InsertDialog(QDialog):
         cursor.close()
         connection.close()
         management_system.load_table()
+
+
+class SearchDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setFixedHeight(100)
+        self.setFixedWidth(200)
+        self.setWindowTitle('Search Student')
+
+        layout = QVBoxLayout()
+
+        student_name = QLineEdit()
+        student_name.setPlaceholderText('Enter student name')
+        layout.addWidget(student_name)
+
+        button = QPushButton('Search')
+        layout.addWidget(button)
+
+        self.setLayout(layout)
+
 
 
 app = QApplication(sys.argv)
