@@ -27,6 +27,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.setMinimumSize(405, 400)
         self.setWindowTitle("Student Management System")
+        self.setWindowIcon(QIcon('icons/main.png'))
 
         # Define Menu items
         file_menu_item = self.menuBar().addMenu("&File")
@@ -40,7 +41,7 @@ class MainWindow(QMainWindow):
         search_student_action.triggered.connect(self.search_student)
         file_menu_item.addAction(search_student_action)
 
-        about_action = QAction('About', self)
+        about_action = QAction(QIcon('icons/about.png'), 'About', self)
         about_action.triggered.connect(self.about_app)
         help_menu_item.addAction(about_action)
 
@@ -120,6 +121,7 @@ class AboutDialog(QMessageBox):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('About')
+        self.setWindowIcon(QIcon('icons/about.png'))
         about_text = """
         Hai, 
         This app is developed by Prakash R while taking 'Python Mega Course'.
@@ -136,6 +138,7 @@ class InsertDialog(QDialog):
         self.setFixedWidth(300)
         self.setFixedHeight(200)
         self.setWindowTitle('Enter Student Data')
+        self.setWindowIcon(QIcon('icons/add.png'))
 
         layout = QVBoxLayout()
 
@@ -173,6 +176,7 @@ class InsertDialog(QDialog):
         self.close()
 
         success_message = QMessageBox()
+        success_message.setWindowIcon(QIcon('icons/add.png'))
         success_message.setWindowTitle('Student Added')
         success_message.setText('The student record was added to the database.')
         success_message.exec()
@@ -184,6 +188,7 @@ class SearchDialog(QDialog):
         self.setFixedHeight(100)
         self.setFixedWidth(200)
         self.setWindowTitle('Search Student')
+        self.setWindowIcon(QIcon('icons/search.png'))
 
         layout = QVBoxLayout()
 
@@ -207,6 +212,7 @@ class SearchDialog(QDialog):
             self.close()
         else:
             message = QMessageBox()
+            message.setWindowIcon(QIcon('icons/search.png'))
             message.setWindowTitle('Error')
             message.setText('No Student found.')
             message.exec()
@@ -218,6 +224,7 @@ class EditDialog(QDialog):
         self.setFixedWidth(300)
         self.setFixedHeight(200)
         self.setWindowTitle('Update Student Data')
+        self.setWindowIcon(QIcon('icons/update.png'))
 
         layout = QVBoxLayout()
 
@@ -268,6 +275,7 @@ class EditDialog(QDialog):
         remove_statusbar_widgets()
 
         success_message = QMessageBox()
+        success_message.setWindowIcon(QIcon('icons/update.png'))
         success_message.setWindowTitle('Record Updated')
         success_message.setText('The selected student record was updated successfully..')
         success_message.exec()
@@ -277,6 +285,7 @@ class DeleteDialog(QDialog):
     def __init__(self):
         super().__init__()
         self.setWindowTitle('Delete Confirmation')
+        self.setWindowIcon(QIcon('icons/delete.png'))
 
         layout = QGridLayout()
 
@@ -313,6 +322,7 @@ class DeleteDialog(QDialog):
 
         success_message = QMessageBox()
         success_message.setWindowTitle('Deleted')
+        success_message.setWindowIcon(QIcon('icons/delete.png'))
         success_message.setText('The student record was deleted successfully...')
         success_message.exec()
 
