@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
-    QComboBox, QPushButton, QToolBar, QStatusBar
+    QComboBox, QPushButton, QToolBar, QStatusBar, QGridLayout, QLabel
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
 import sys
@@ -174,7 +174,7 @@ class EditDialog(QDialog):
         # Get row number of the selected cell
         index = management_system.student_table.currentRow()
         # Get id, name, course, mobile from selected row
-        self.student_id = management_system.student_table.item(index,0).text()
+        self.student_id = management_system.student_table.item(index, 0).text()
         student_name = management_system.student_table.item(index, 1).text()
         course_enrolled = management_system.student_table.item(index, 2).text()
         mobile = management_system.student_table.item(index, 3).text()
@@ -215,7 +215,39 @@ class EditDialog(QDialog):
 
 
 class DeleteDialog(QDialog):
-    pass
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('Delete Confirmation')
+
+        layout = QGridLayout()
+
+        yes = QPushButton('Yes')
+        no = QPushButton('No')
+
+        confirmation_text = QLabel("Delete this record?")
+        layout.addWidget(confirmation_text, 0, 0, 1, 2)
+        layout.addWidget(yes, 1, 0, 1, 1)
+        layout.addWidget(no, 1, 1, 1, 1)
+
+        yes.clicked.connect(self.delete_record)
+        no.clicked.connect(self.close)
+
+        self.setLayout(layout)
+
+    def delete_record(self):
+        # Get row number of the selected cell
+        index = management_system.student_table.currentRow()
+        # Get id, name, course, mobile from selected row
+        student_id = management_system.student_table.item(index, 0).text()
+
+        connection = sqlite3.connect('database.db')
+        cursor = connection.cursor()
+        cursor.execute('DELETE FROM students where id = ?', (student_id,))
+        connection.commit()
+        cursor.close()
+        connection.close()
+        management_system.load_table()
+        self.close()
 
 
 app = QApplication(sys.argv)
