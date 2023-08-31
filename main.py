@@ -41,6 +41,7 @@ class MainWindow(QMainWindow):
         file_menu_item.addAction(search_student_action)
 
         about_action = QAction('About', self)
+        about_action.triggered.connect(self.about_app)
         help_menu_item.addAction(about_action)
 
         self.student_table = QTableWidget()
@@ -108,6 +109,25 @@ class MainWindow(QMainWindow):
     def delete_student():
         dialog = DeleteDialog()
         dialog.exec()
+
+    @staticmethod
+    def about_app():
+        dialog = AboutDialog()
+        dialog.exec()
+
+
+class AboutDialog(QMessageBox):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle('About')
+        about_text = """
+        Hai, 
+        This app is developed by Prakash R while taking 'Python Mega Course'.
+        Feel free to clone, edit the code if required.
+        
+        Happy Learning.
+        """
+        self.setText(about_text)
 
 
 class InsertDialog(QDialog):
