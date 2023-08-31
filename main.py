@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
-    QComboBox, QPushButton, QToolBar, QStatusBar, QGridLayout, QLabel
+    QComboBox, QPushButton, QToolBar, QStatusBar, QGridLayout, QLabel, QMessageBox
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
 import sys
@@ -134,6 +134,13 @@ class InsertDialog(QDialog):
         connection.close()
         management_system.load_table()
 
+        self.close()
+
+        success_message = QMessageBox()
+        success_message.setWindowTitle('Student Added')
+        success_message.setText('The student record was added to the database.')
+        success_message.exec()
+
 
 class SearchDialog(QDialog):
     def __init__(self):
@@ -158,8 +165,15 @@ class SearchDialog(QDialog):
         name = self.student_name.text()
         items = management_system.student_table.findItems(name, Qt.MatchFlag.MatchFixedString)
 
-        for item in items:
-            management_system.student_table.item(item.row(), 1).setSelected(True)
+        if items:
+            for item in items:
+                management_system.student_table.item(item.row(), 1).setSelected(True)
+            self.close()
+        else:
+            message = QMessageBox()
+            message.setWindowTitle('Error')
+            message.setText('No Student found.')
+            message.exec()
 
 
 class EditDialog(QDialog):
@@ -213,6 +227,13 @@ class EditDialog(QDialog):
         connection.close()
         management_system.load_table()
 
+        self.close()
+
+        success_message = QMessageBox()
+        success_message.setWindowTitle('Record Updated')
+        success_message.setText('The selected student record was updated successfully..')
+        success_message.exec()
+
 
 class DeleteDialog(QDialog):
     def __init__(self):
@@ -248,6 +269,11 @@ class DeleteDialog(QDialog):
         connection.close()
         management_system.load_table()
         self.close()
+
+        success_message = QMessageBox()
+        success_message.setWindowTitle('Deleted')
+        success_message.setText('The student record was deleted successfully...')
+        success_message.exec()
 
 
 app = QApplication(sys.argv)
