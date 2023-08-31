@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit,\
-    QComboBox, QPushButton, QToolBar
+from PyQt6.QtWidgets import QMainWindow, QApplication, QTableWidget, QTableWidgetItem, QDialog, QVBoxLayout, QLineEdit, \
+    QComboBox, QPushButton, QToolBar, QStatusBar
 from PyQt6.QtGui import QAction, QIcon
 from PyQt6.QtCore import Qt
 import sys
@@ -40,6 +40,29 @@ class MainWindow(QMainWindow):
         toolbar.addAction(add_student_action)
         toolbar.addAction(search_student_action)
 
+        # Create a status bar
+        self.status_bar = QStatusBar()
+        self.setStatusBar(self.status_bar)
+
+        # Detect a cell click
+        self.student_table.cellClicked.connect(self.cell_selected)
+
+    def cell_selected(self):
+        edit_button = QPushButton('Edit')
+        edit_button.clicked.connect(self.edit_student)
+
+        delete_button = QPushButton('Delete')
+        delete_button.clicked.connect(self.delete_student)
+
+        # Prevent duplicate buttons
+        children = self.status_bar.findChildren(QPushButton)
+        if children:
+            for child in children:
+                self.status_bar.removeWidget(child)
+
+        self.status_bar.addWidget(edit_button)
+        self.status_bar.addWidget(delete_button)
+
     def load_table(self):
         connection = sqlite3.connect('database.db')
         result = connection.execute('SELECT * FROM STUDENTS')
@@ -58,6 +81,16 @@ class MainWindow(QMainWindow):
     @staticmethod
     def search_student():
         dialog = SearchDialog()
+        dialog.exec()
+
+    @staticmethod
+    def edit_student():
+        dialog = EditDialog()
+        dialog.exec()
+
+    @staticmethod
+    def delete_student():
+        dialog = DeleteDialog()
         dialog.exec()
 
 
@@ -127,6 +160,14 @@ class SearchDialog(QDialog):
 
         for item in items:
             management_system.student_table.item(item.row(), 1).setSelected(True)
+
+
+class EditDialog(QDialog):
+    pass
+
+
+class DeleteDialog(QDialog):
+    pass
 
 
 app = QApplication(sys.argv)
