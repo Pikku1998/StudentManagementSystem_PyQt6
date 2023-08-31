@@ -6,6 +6,22 @@ import sys
 import sqlite3
 
 
+class DatabaseConnection:
+    def __init__(self, database_file='database.db'):
+        self.database = database_file
+
+    def connect(self):
+        connection = sqlite3.connect(self.database)
+        return connection
+
+
+def remove_statusbar_widgets():
+    children = management_system.status_bar.findChildren(QPushButton)
+    if children:
+        for child in children:
+            management_system.status_bar.removeWidget(child)
+
+
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -126,7 +142,7 @@ class InsertDialog(QDialog):
         name = self.student_name.text()
         course = self.course_enrolled.currentText()
         mobile = self.mobile.text()
-        connection = sqlite3.connect('database.db')
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         cursor.execute('INSERT INTO students (name, course, mobile) VALUES (?,?,?)', (name, course, mobile))
         connection.commit()
@@ -214,11 +230,10 @@ class EditDialog(QDialog):
         self.setLayout(layout)
 
     def update_student(self):
-        pass
         name = self.student_name.text()
         course = self.course_enrolled.currentText()
         mobile = self.mobile.text()
-        connection = sqlite3.connect('database.db')
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         cursor.execute('UPDATE students SET name = ?, course = ?, mobile = ? WHERE id = ?',
                        (name, course, mobile, self.student_id))
@@ -228,6 +243,9 @@ class EditDialog(QDialog):
         management_system.load_table()
 
         self.close()
+
+        # Remove buttons from status bar after updating.
+        remove_statusbar_widgets()
 
         success_message = QMessageBox()
         success_message.setWindowTitle('Record Updated')
@@ -261,7 +279,7 @@ class DeleteDialog(QDialog):
         # Get id, name, course, mobile from selected row
         student_id = management_system.student_table.item(index, 0).text()
 
-        connection = sqlite3.connect('database.db')
+        connection = DatabaseConnection().connect()
         cursor = connection.cursor()
         cursor.execute('DELETE FROM students where id = ?', (student_id,))
         connection.commit()
@@ -269,6 +287,9 @@ class DeleteDialog(QDialog):
         connection.close()
         management_system.load_table()
         self.close()
+
+        # Remove buttons from status bar after deleting.
+        remove_statusbar_widgets()
 
         success_message = QMessageBox()
         success_message.setWindowTitle('Deleted')
